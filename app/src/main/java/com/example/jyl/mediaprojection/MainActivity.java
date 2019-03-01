@@ -10,12 +10,18 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.LinearLayout;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = "MainActivity";
 
+    private ArrayList<String> mImages = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +30,26 @@ public class MainActivity extends AppCompatActivity {
 
         requestCapturePermission();
         isStoragePermissionGranted();
+        getImages();
+    }
+
+    private void getImages(){
+        Log.d(TAG, "initImageBitmaps: preparing bitmaps.");
+        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
+        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
+        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
+        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
+        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
+        initRecyclerView();
+    }
+
+    private void initRecyclerView(){
+        Log.d(TAG, "initRecyclerView: init recyclerview");
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(layoutManager);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mImages);
+        recyclerView.setAdapter(adapter);
     }
 
 //    public void checkCanDrawOverlays(){
