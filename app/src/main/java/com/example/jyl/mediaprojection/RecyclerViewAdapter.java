@@ -1,6 +1,7 @@
 package com.example.jyl.mediaprojection;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -19,9 +21,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static final String TAG = "RecyclerViewAdapter";
 
     private ArrayList<String> mImages = new ArrayList<>();
+    private ArrayList<String> mNames = new ArrayList<>();
     private Context mContext;
 
-    public RecyclerViewAdapter(Context Context, ArrayList<String> mImages) {
+    public RecyclerViewAdapter(Context Context, ArrayList<String> mNames, ArrayList<String> mImages) {
+        this.mNames = mNames;
         this.mImages = mImages;
         this.mContext = Context;
     }
@@ -35,13 +39,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         Log.d(TAG, "onBindViewHolder called");
 
         Glide.with(mContext)
                 .asBitmap()
                 .load(mImages.get(position))
                 .into(holder.image);
+
+        holder.name.setText(mNames.get(position));
 //        String fileName = "1.jpg";
 //        String completePath = Environment.getExternalStorageDirectory() + "/" + fileName;
 //
@@ -52,10 +58,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 //                .load(imageUri)
 //                .into(imgView);
         holder.image.setOnClickListener(new View.OnClickListener() {
+            int check = 1; //When check = 1 ,you have your FIRST background set to the button
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "OnClick: clicked on an image: " + mImages.get(position));
-                Toast.makeText(mContext, mImages.get(position), Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, Integer.toString(position), Toast.LENGTH_SHORT).show();
+//                holder.image.setBackgroundResource(R.drawable.border_selected);
+                if(check == 1){
+                    holder.image.setImageResource(R.drawable.test_pic);
+                    check = 0;
+                }else{
+                    holder.image.setBackgroundColor(Color.WHITE);
+                    check = 1;
+                }
             }
         });
     }
@@ -68,10 +83,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         ImageView image;
+        TextView name;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             image = itemView.findViewById(R.id.image);
+            name = itemView.findViewById(R.id.name);
         }
     }
 }

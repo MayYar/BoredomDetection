@@ -4,8 +4,11 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.projection.MediaProjectionManager;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -14,7 +17,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +27,8 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "MainActivity";
 
     private ArrayList<String> mImages = new ArrayList<>();
+    private ArrayList<String> mNames = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +42,44 @@ public class MainActivity extends AppCompatActivity {
 
     private void getImages(){
         Log.d(TAG, "initImageBitmaps: preparing bitmaps.");
-        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
-        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
-        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
-        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
-        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
+
+//        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
+//        mNames.add("Test");
+//
+//        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
+//        mNames.add("Test");
+//
+//        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
+//        mNames.add("Test");
+//
+//        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
+//        mNames.add("Test");
+//
+//        mImages.add("https://i.kfs.io/muser/global/147008692v1/fit/300x300.jpg");
+//        mNames.add("Test");
+
+        File imgFile = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "Demo");
+        if(imgFile.exists()){
+//            Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getAbsolutePath());
+//            Toast.makeText(this, imgFile + "exists", Toast.LENGTH_LONG).show();
+            Log.d(TAG,  "Path exists: " + imgFile);
+
+            File[] files = imgFile.listFiles();
+            Log.d(TAG, "Files Size: "+ files.length);
+            for (int i = 0; i < files.length; i++)
+            {
+                Log.d(TAG, "FileName:" + files[i].getName());
+                mImages.add(imgFile.toString() + "/" + files[i].getName());
+                mNames.add(files[i].getName().substring(0, 8) + " " + files[i].getName().substring(8, 10) + ":" +files[i].getName().substring(10, 12) + ":" + files[i].getName().substring(12, 14));
+            }
+
+        }else{
+//            Toast.makeText(this, imgFile + " not exists", Toast.LENGTH_LONG).show();
+            Log.d(TAG,  "Path NOT exists: " + imgFile);
+
+        }
+
         initRecyclerView();
     }
 
@@ -48,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mImages);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mNames, mImages);
         recyclerView.setAdapter(adapter);
     }
 
