@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<String> mImages = new ArrayList<>();
     private ArrayList<String> mNames = new ArrayList<>();
+    private ArrayList<Boolean> mCheck = new ArrayList<>();
 
 
     @Override
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "FileName:" + files[i].getName());
                 mImages.add(imgFile.toString() + "/" + files[i].getName());
                 mNames.add(files[i].getName().substring(0, 8) + " " + files[i].getName().substring(8, 10) + ":" +files[i].getName().substring(10, 12) + ":" + files[i].getName().substring(12, 14));
+                mCheck.add(false);
             }
 
         }else{
@@ -88,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mNames, mImages);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mNames, mImages, mCheck);
         recyclerView.setAdapter(adapter);
     }
 

@@ -2,6 +2,7 @@ package com.example.jyl.mediaprojection;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -14,6 +15,8 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
@@ -22,11 +25,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private ArrayList<String> mImages = new ArrayList<>();
     private ArrayList<String> mNames = new ArrayList<>();
-    private Context mContext;
+    private ArrayList<Boolean> mCheck = new ArrayList<>();
 
-    public RecyclerViewAdapter(Context Context, ArrayList<String> mNames, ArrayList<String> mImages) {
+    private Context mContext;
+    int selectedPosition=-1;
+
+    public RecyclerViewAdapter(Context Context, ArrayList<String> mNames, ArrayList<String> mImages, ArrayList<Boolean> mCheck) {
         this.mNames = mNames;
         this.mImages = mImages;
+        this.mCheck = mCheck;
         this.mContext = Context;
     }
 
@@ -35,7 +42,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Log.d(TAG, "onCreateViewHolder called");
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem, parent, false);
-        return new ViewHolder(view);
+        ViewHolder holder = new ViewHolder(view);
+        holder.image = (ImageView)view.findViewById(R.id.image);
+        holder.name = (TextView)view.findViewById(R.id.name);
+        holder.check = (ImageView)view.findViewById(R.id.check);
+
+        return holder;
     }
 
     @Override
@@ -48,29 +60,24 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 .into(holder.image);
 
         holder.name.setText(mNames.get(position));
-//        String fileName = "1.jpg";
-//        String completePath = Environment.getExternalStorageDirectory() + "/" + fileName;
-//
-//        File file = new File(completePath);
-//        Uri imageUri = Uri.fromFile(file);
-//
-//        Glide.with(this)
-//                .load(imageUri)
-//                .into(imgView);
-        holder.image.setOnClickListener(new View.OnClickListener() {
-            int check = 1; //When check = 1 ,you have your FIRST background set to the button
+
+        if(mCheck.get(position))
+            holder.check.setVisibility(View.VISIBLE);
+        else
+            holder.check.setVisibility(View.INVISIBLE);
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "OnClick: clicked on an image: " + mImages.get(position));
                 Toast.makeText(mContext, Integer.toString(position), Toast.LENGTH_SHORT).show();
-//                holder.image.setBackgroundResource(R.drawable.border_selected);
-                if(check == 1){
-                    holder.image.setImageResource(R.drawable.test_pic);
-                    check = 0;
-                }else{
-                    holder.image.setBackgroundColor(Color.WHITE);
-                    check = 1;
-                }
+                if(!mCheck.get(position))
+                    mCheck.set(position, true);
+                else
+                    mCheck.set(position, false);
+//                selectedPosition=position;
+                notifyDataSetChanged();
+
             }
         });
     }
@@ -84,11 +91,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         ImageView image;
         TextView name;
+        ImageView check;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            image = itemView.findViewById(R.id.image);
-            name = itemView.findViewById(R.id.name);
+
         }
     }
 }
