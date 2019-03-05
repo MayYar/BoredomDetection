@@ -91,32 +91,40 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public boolean onLongClick(View v) {
 
-
-//                if(checkCount == 2){
-//                    new AlertDialog.Builder(mContext)
-//                            .setTitle("Warning")
-//                            .setMessage("You have already marked the interval between position " + (selectedPosition1 = (selectedPosition1<selectedPosition2)?selectedPosition1:selectedPosition2) + " and " + (selectedPosition2 = (selectedPosition1<selectedPosition2)?selectedPosition2:selectedPosition1))
-//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//                                @Override
-//                                public void onClick(DialogInterface dialog, int which) {
-//
-//                                }
-//                            })
-//                            .show();
-
-//                }
+                //未選擇 > 選擇
                 if(!mCheck.get(position)){
-                    mCheck.set(position, true);
-                    checkCount++;
 
-//                        if(selectedPosition1 == -1)
-//                            selectedPosition1 = position;
-//                        else
-//                            selectedPosition2 = position;
-                }
+                    if(checkCount == 2){
+                        int temp = -1;
+                    new AlertDialog.Builder(mContext)
+                            .setTitle("Warning")
+                            .setMessage("You have already marked the interval between position " + (temp = (selectedPosition1<selectedPosition2)?selectedPosition1:selectedPosition2) + " and " + (temp = (selectedPosition1>selectedPosition2)?selectedPosition1:selectedPosition2))
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .show();
+
+                    }else{
+                            mCheck.set(position, true);
+                            checkCount++;
+                            if(selectedPosition1 == -1)
+                                selectedPosition1 = position;
+                            else
+                                selectedPosition2 = position;
+                        }
+                    }
+                //選擇 > 未選擇
                 else {
                     mCheck.set(position, false);
                     checkCount--;
+
+                    if(selectedPosition1 == position)
+                        selectedPosition1 = -1;
+                    else
+                        selectedPosition2 = -1;
                 }
 
 
