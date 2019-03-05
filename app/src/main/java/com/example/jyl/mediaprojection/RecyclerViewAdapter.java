@@ -1,6 +1,8 @@
 package com.example.jyl.mediaprojection;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.media.Image;
 import android.support.annotation.NonNull;
@@ -19,6 +21,8 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import static com.example.jyl.mediaprojection.MainActivity.imageShow;
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
 
     private static final String TAG = "RecyclerViewAdapter";
@@ -28,7 +32,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<Boolean> mCheck = new ArrayList<>();
 
     private Context mContext;
-    int selectedPosition=-1;
+    int selectedPosition1 = -1;
+    int selectedPosition2 = -1;
+    private int checkCount = 0;
 
     public RecyclerViewAdapter(Context Context, ArrayList<String> mNames, ArrayList<String> mImages, ArrayList<Boolean> mCheck) {
         this.mNames = mNames;
@@ -59,7 +65,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 .load(mImages.get(position))
                 .into(holder.image);
 
-        holder.name.setText(mNames.get(position));
+//        holder.name.setText(mNames.get(position));
+        holder.name.setText("");
 
         if(mCheck.get(position))
             holder.check.setVisibility(View.VISIBLE);
@@ -71,13 +78,53 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             public void onClick(View v) {
                 Log.d(TAG, "OnClick: clicked on an image: " + mImages.get(position));
                 Toast.makeText(mContext, Integer.toString(position), Toast.LENGTH_SHORT).show();
-                if(!mCheck.get(position))
+
+                Glide.with(mContext)
+                        .asBitmap()
+                        .load(mImages.get(position))
+                        .into(imageShow);
+
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+
+
+//                if(checkCount == 2){
+//                    new AlertDialog.Builder(mContext)
+//                            .setTitle("Warning")
+//                            .setMessage("You have already marked the interval between position " + (selectedPosition1 = (selectedPosition1<selectedPosition2)?selectedPosition1:selectedPosition2) + " and " + (selectedPosition2 = (selectedPosition1<selectedPosition2)?selectedPosition2:selectedPosition1))
+//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//
+//                                }
+//                            })
+//                            .show();
+
+//                }
+                if(!mCheck.get(position)){
                     mCheck.set(position, true);
-                else
+                    checkCount++;
+
+//                        if(selectedPosition1 == -1)
+//                            selectedPosition1 = position;
+//                        else
+//                            selectedPosition2 = position;
+                }
+                else {
                     mCheck.set(position, false);
-//                selectedPosition=position;
+                    checkCount--;
+                }
+
+
+
+
                 notifyDataSetChanged();
 
+                return true;
             }
         });
     }
@@ -98,4 +145,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }
     }
+
+
 }
