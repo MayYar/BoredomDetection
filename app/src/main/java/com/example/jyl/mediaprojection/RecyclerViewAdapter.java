@@ -30,8 +30,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> mImages = new ArrayList<>();
 //    private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<Boolean> mCheck = new ArrayList<>();
-    private ArrayList<Boolean> mStart = new ArrayList<>();
-    private ArrayList<Boolean> mEnd = new ArrayList<>();
+    private ArrayList<String> mStart = new ArrayList<>();
+    private ArrayList<String> mEnd = new ArrayList<>();
     private ArrayList<String> mLabel = new ArrayList<>();
 
     private Context mContext;
@@ -39,7 +39,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public static int selectedPosition2 = -1;
     private int checkCount = 0;
 
-    public RecyclerViewAdapter(Context Context, ArrayList<String> mImages, ArrayList<Boolean> mCheck, ArrayList<String> mLabel, ArrayList<Boolean> mStart, ArrayList<Boolean> mEnd) {
+    public RecyclerViewAdapter(Context Context, ArrayList<String> mImages, ArrayList<Boolean> mCheck, ArrayList<String> mLabel, ArrayList<String> mStart, ArrayList<String> mEnd) {
 //        this.mNames = mNames;
         this.mImages = mImages;
         this.mCheck = mCheck;
@@ -83,16 +83,21 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             holder.check.setVisibility(View.INVISIBLE);
 
         if(mLabel.get(position).equals("NA")){
-            holder.label.setVisibility(View.VISIBLE);
+            holder.label.setVisibility(View.INVISIBLE);
             holder.start.setVisibility(View.INVISIBLE);
             holder.end.setVisibility(View.INVISIBLE);
 
         }else if(mLabel.get(position).equals("bored")){
             holder.label.setVisibility(View.VISIBLE);
-            if(mStart.get(position))
+            if(mStart.get(position).equals("1")){
+                holder.start.setVisibility(View.VISIBLE);
                 holder.end.setVisibility(View.INVISIBLE);
-            else if(mEnd.get(position))
+            }
+            else if(mEnd.get(position).equals("1")){
                 holder.start.setVisibility(View.INVISIBLE);
+                holder.end.setVisibility(View.VISIBLE);
+            }
+
             else{
                 holder.start.setVisibility(View.INVISIBLE);
                 holder.end.setVisibility(View.INVISIBLE);
@@ -100,10 +105,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }else if(mLabel.get(position).equals("not_bored")){
             holder.label.setVisibility(View.VISIBLE);
-            if(mStart.get(position))
-                holder.end.setVisibility(View.INVISIBLE);
-            else if(mEnd.get(position))
-                holder.start.setVisibility(View.INVISIBLE);
+            if(mStart.get(position).equals("1"))
+                holder.start.setVisibility(View.VISIBLE);
+            else if(mEnd.get(position).equals("1"))
+                holder.end.setVisibility(View.VISIBLE);
             else{
                 holder.start.setVisibility(View.INVISIBLE);
                 holder.end.setVisibility(View.INVISIBLE);
