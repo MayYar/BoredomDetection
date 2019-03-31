@@ -28,19 +28,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private static final String TAG = "RecyclerViewAdapter";
 
     private ArrayList<String> mImages = new ArrayList<>();
-    private ArrayList<String> mNames = new ArrayList<>();
+//    private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<Boolean> mCheck = new ArrayList<>();
+    private ArrayList<Boolean> mStart = new ArrayList<>();
+    private ArrayList<Boolean> mEnd = new ArrayList<>();
+    private ArrayList<String> mLabel = new ArrayList<>();
 
     private Context mContext;
-    int selectedPosition1 = -1;
-    int selectedPosition2 = -1;
+    public static int selectedPosition1 = -1;
+    public static int selectedPosition2 = -1;
     private int checkCount = 0;
 
-    public RecyclerViewAdapter(Context Context, ArrayList<String> mNames, ArrayList<String> mImages, ArrayList<Boolean> mCheck) {
-        this.mNames = mNames;
+    public RecyclerViewAdapter(Context Context, ArrayList<String> mImages, ArrayList<Boolean> mCheck, ArrayList<String> mLabel, ArrayList<Boolean> mStart, ArrayList<Boolean> mEnd) {
+//        this.mNames = mNames;
         this.mImages = mImages;
         this.mCheck = mCheck;
         this.mContext = Context;
+        this.mLabel = mLabel;
+        this.mStart = mStart;
+        this.mEnd = mEnd;
     }
 
     @NonNull
@@ -50,8 +56,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.layout_listitem, parent, false);
         ViewHolder holder = new ViewHolder(view);
         holder.image = (ImageView)view.findViewById(R.id.image);
-        holder.name = (TextView)view.findViewById(R.id.name);
+//        holder.name = (TextView)view.findViewById(R.id.name);
         holder.check = (ImageView)view.findViewById(R.id.check);
+        holder.label = (View)view.findViewById(R.id.v_label);
+        holder.start = (ImageView)view.findViewById(R.id.iv_start);
+        holder.end = (ImageView)view.findViewById(R.id.iv_end);
 
         return holder;
     }
@@ -66,12 +75,40 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 .into(holder.image);
 
 //        holder.name.setText(mNames.get(position));
-        holder.name.setText("");
+//        holder.name.setText("");
 
         if(mCheck.get(position))
             holder.check.setVisibility(View.VISIBLE);
         else
             holder.check.setVisibility(View.INVISIBLE);
+
+        if(mLabel.get(position).equals("NA")){
+            holder.label.setVisibility(View.VISIBLE);
+            holder.start.setVisibility(View.INVISIBLE);
+            holder.end.setVisibility(View.INVISIBLE);
+
+        }else if(mLabel.get(position).equals("bored")){
+            holder.label.setVisibility(View.VISIBLE);
+            if(mStart.get(position))
+                holder.end.setVisibility(View.INVISIBLE);
+            else if(mEnd.get(position))
+                holder.start.setVisibility(View.INVISIBLE);
+            else{
+                holder.start.setVisibility(View.INVISIBLE);
+                holder.end.setVisibility(View.INVISIBLE);
+            }
+
+        }else if(mLabel.get(position).equals("not_bored")){
+            holder.label.setVisibility(View.VISIBLE);
+            if(mStart.get(position))
+                holder.end.setVisibility(View.INVISIBLE);
+            else if(mEnd.get(position))
+                holder.start.setVisibility(View.INVISIBLE);
+            else{
+                holder.start.setVisibility(View.INVISIBLE);
+                holder.end.setVisibility(View.INVISIBLE);
+            }
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,8 +182,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         ImageView image;
-        TextView name;
+//        TextView name;
         ImageView check;
+        ImageView start;
+        ImageView end;
+        View label;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

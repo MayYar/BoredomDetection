@@ -3,6 +3,7 @@ package com.example.jyl.mediaprojection;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,25 +19,46 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static com.example.jyl.mediaprojection.RecyclerViewAdapter.selectedPosition1;
+import static com.example.jyl.mediaprojection.RecyclerViewAdapter.selectedPosition2;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = "MainActivity";
 
     private ArrayList<String> mImages = new ArrayList<>();
-    private ArrayList<String> mNames = new ArrayList<>();
+//    private ArrayList<String> mNames = new ArrayList<>();
     private ArrayList<Boolean> mCheck = new ArrayList<>();
+    private ArrayList<Boolean> mStart = new ArrayList<>();
+    private ArrayList<Boolean> mEnd = new ArrayList<>();
+    private ArrayList<String> mLabel = new ArrayList<>();
+
+    private SharedPreferences sharedPreferences;
+
+    int totalsize = 0;
 
     public static ImageView imageShow;
+    Button bored;
+    Button not_bored;
+    private ArrayList<String> arrayItems;
+    private ArrayList<Boolean> arrayItems1;
+    private ArrayList<Boolean> arrayItems2;
+
 
 
     @Override
@@ -44,12 +66,40 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        sharedPreferences = getSharedPreferences("com.example.jyl.mediaprojection", MODE_PRIVATE);
+
         imageShow = (ImageView)findViewById(R.id.image_show);
+        bored = (Button)findViewById(R.id.btn_bored);
+        not_bored = (Button)findViewById(R.id.btn_notbored);
+
+        bored.setOnClickListener(doClick);
+//        not_bored.setOnClickListener(doClick);
+
 
         requestCapturePermission();
         isStoragePermissionGranted();
         getImages();
     }
+
+    Button.OnClickListener doClick = new Button.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+
+                    mLabel.set(selectedPosition1, "bored");
+                    mLabel.set(selectedPosition2, "bored");
+
+                    if(selectedPosition1 < selectedPosition2){
+                        mStart.set(selectedPosition1, true);
+                        mEnd.set(selectedPosition2, true);
+                    }else{
+                        mStart.set(selectedPosition2, true);
+                        mEnd.set(selectedPosition1, true);
+                    }
+
+
+        }
+    };
 
     private void getImages(){
         Log.d(TAG, "initImageBitmaps: preparing bitmaps.");
@@ -62,27 +112,97 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG,  "Path exists: " + imgFile);
 
             File[] files = imgFile.listFiles();
-            Log.d(TAG, "Files Size: "+ files.length);
+//            Log.d(TAG, "Files Size: "+ files.length);
             mImages.clear();
-            mNames.clear();
+//            mNames.clear();
             mCheck.clear();
-            for (int i = 0; i < files.length; i++)
-            {
-                Log.d(TAG, "FileName:" + files[i].getName());
-                mImages.add(imgFile.toString() + "/" + files[i].getName());
-                mNames.add(files[i].getName().substring(0, 8) + " " + files[i].getName().substring(8, 10) + ":" +files[i].getName().substring(10, 12) + ":" + files[i].getName().substring(12, 14));
-                mCheck.add(false);
+            mLabel.clear();
+            mStart.clear();
+            mEnd.clear();
+            if(imgFile.listFiles()!=null){
+                for (int i = 0; i < files.length; i++)
+                {
+                    Log.d(TAG, "FileName:" + files[i].getName());
+                    mImages.add(imgFile.toString() + "/" + files[i].getName());
+//                mNames.add(files[i].getName().substring(0, 8) + " " + files[i].getName().substring(8, 10) + ":" +files[i].getName().substring(10, 12) + ":" + files[i].getName().substring(12, 14));
+                    mCheck.add(false);
+
+
+                    //Get data and turn String to ArrayList
+//                if(i<totalsize){
+//                    String serializedObject = sharedPreferences.getString("Label", null);
+//                    Log.d(TAG, "Get SerializeObject: " + serializedObject);
+//                    arrayItems = new ArrayList<>();
+//                    if (serializedObject != null){
+//                        Gson gson1 = new Gson();
+//                        Type type = new TypeToken<ArrayList<String>>(){}.getType();
+//                        arrayItems = gson1.fromJson(serializedObject, type);
+//                        Log.d(TAG, "SerializeObject: " + arrayItems);
+//                        mLabel.add(arrayItems.get(i));
+//                    }
+//                }
+//                else
+                    mLabel.add("NA");
+
+//                if(i<totalsize){
+//                    //Get data and turn String to ArrayList
+//                    String serializedObject1 = sharedPreferences.getString("Start", null);
+//                    Log.d(TAG, "Get SerializeObject: " + serializedObject1);
+//                    arrayItems1 = new ArrayList<>();
+//                    if (serializedObject1 != null){
+//                        Gson gson1 = new Gson();
+//                        Type type = new TypeToken<ArrayList<String>>(){}.getType();
+//                        arrayItems1 = gson1.fromJson(serializedObject1, type);
+//                        Log.d(TAG, "SerializeObject: " + arrayItems1);
+//                        mStart.add(arrayItems1.get(i));
+//                    }
+//                }
+//                else
+                    mStart.add(false);
+
+
+                    //Get data and turn String to ArrayList
+//                String serializedObject2 = sharedPreferences.getString("End", null);
+//                Log.d(TAG, "Get SerializeObject: " + serializedObject2);
+//                arrayItems2 = new ArrayList<>();
+//                if (serializedObject2 != null){
+//                    Gson gson1 = new Gson();
+//                    Type type = new TypeToken<ArrayList<String>>(){}.getType();
+//                    arrayItems2 = gson1.fromJson(serializedObject2, type);
+//                    Log.d(TAG, "SerializeObject: " + arrayItems2);
+//                    mEnd.add(arrayItems2.get(i));
+//                }else
+                    mEnd.add(false);
+                }
+
+                Glide.with(this)
+                        .asBitmap()
+                        .load(mImages.get(0))
+                        .into(imageShow);
+            }else{
+//            Toast.makeText(this, imgFile + " not exists", Toast.LENGTH_LONG).show();
+                Log.d(TAG,  "Path NOT exists: " + imgFile);
+
+            }
             }
 
-            Glide.with(this)
-                    .asBitmap()
-                    .load(mImages.get(0))
-                    .into(imageShow);
-        }else{
-//            Toast.makeText(this, imgFile + " not exists", Toast.LENGTH_LONG).show();
-            Log.d(TAG,  "Path NOT exists: " + imgFile);
 
-        }
+//        //Save data to preference
+//        Gson gson = new Gson();
+//        String json = gson.toJson(mLabel);
+//        sharedPreferences.edit().putString("Label", json).apply();
+//        totalsize = mLabel.size();
+//
+//        //Save data to preference
+//        Gson gson1 = new Gson();
+//        String json1 = gson1.toJson(mStart);
+//        sharedPreferences.edit().putString("Start", json1).apply();
+//
+//        //Save data to preference
+//        Gson gson2 = new Gson();
+//        String json2 = gson2.toJson(mEnd);
+//        sharedPreferences.edit(). putString("End", json2).apply();
+
 
 
         initRecyclerView();
@@ -93,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mNames, mImages, mCheck);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mImages, mCheck, mLabel, mStart, mEnd);
         recyclerView.setAdapter(adapter);
     }
 

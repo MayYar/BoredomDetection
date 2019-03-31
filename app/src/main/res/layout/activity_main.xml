@@ -29,12 +29,27 @@
             tools:layout_editor_absoluteX="8dp"
             tools:layout_editor_absoluteY="8dp" />
 
-        <Button
-            android:id="@+id/button3"
+        <TextView
+            android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Submit" />
+            android:layout_marginTop="20dp"
+            android:gravity="center_horizontal"
+            android:text="Scroll down"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_bored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="100dp"
+            android:text="Bored" />
+
+        <Button
+            android:id="@+id/btn_notbored"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Not Bored" />
 
     </LinearLayout>
 
