@@ -33,13 +33,15 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> mStart = new ArrayList<>();
     private ArrayList<String> mEnd = new ArrayList<>();
     private ArrayList<String> mLabel = new ArrayList<>();
+    private ArrayList<String> mIndex = new ArrayList<>();
+
 
     private Context mContext;
     public static int selectedPosition1 = -1;
     public static int selectedPosition2 = -1;
     private int checkCount = 0;
 
-    public RecyclerViewAdapter(Context Context, ArrayList<String> mImages, ArrayList<Boolean> mCheck, ArrayList<String> mLabel, ArrayList<String> mStart, ArrayList<String> mEnd) {
+    public RecyclerViewAdapter(Context Context, ArrayList<String> mImages, ArrayList<Boolean> mCheck, ArrayList<String> mLabel, ArrayList<String> mStart, ArrayList<String> mEnd, ArrayList<String> mIndex) {
 //        this.mNames = mNames;
         this.mImages = mImages;
         this.mCheck = mCheck;
@@ -47,6 +49,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.mLabel = mLabel;
         this.mStart = mStart;
         this.mEnd = mEnd;
+        this.mIndex = mIndex;
+
     }
 
     @NonNull
@@ -89,6 +93,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }else if(mLabel.get(position).equals("bored")){
             holder.label.setVisibility(View.VISIBLE);
+            holder.label.setBackgroundColor(Color.parseColor("#a40404"));
+            holder.start.setImageResource(R.drawable.bored_start_circle);
+            holder.end.setImageResource(R.drawable.bored_start_circle);
             if(mStart.get(position).equals("1")){
                 holder.start.setVisibility(View.VISIBLE);
                 holder.end.setVisibility(View.INVISIBLE);
@@ -97,7 +104,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 holder.start.setVisibility(View.INVISIBLE);
                 holder.end.setVisibility(View.VISIBLE);
             }
-
             else{
                 holder.start.setVisibility(View.INVISIBLE);
                 holder.end.setVisibility(View.INVISIBLE);
@@ -105,10 +111,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
         }else if(mLabel.get(position).equals("not_bored")){
             holder.label.setVisibility(View.VISIBLE);
-            if(mStart.get(position).equals("1"))
+            holder.label.setBackgroundColor(Color.parseColor("#0044BB"));
+            holder.start.setImageResource(R.drawable.not_bored_start_circle);
+            holder.end.setImageResource(R.drawable.not_bored_start_circle);
+            if(mStart.get(position).equals("1")){
                 holder.start.setVisibility(View.VISIBLE);
-            else if(mEnd.get(position).equals("1"))
+                holder.end.setVisibility(View.INVISIBLE);
+            }
+            else if(mEnd.get(position).equals("1")){
+                holder.start.setVisibility(View.INVISIBLE);
                 holder.end.setVisibility(View.VISIBLE);
+            }
             else{
                 holder.start.setVisibility(View.INVISIBLE);
                 holder.end.setVisibility(View.INVISIBLE);
@@ -133,8 +146,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             @Override
             public boolean onLongClick(View v) {
 
+                //以標記
+                if(Integer.parseInt(mIndex.get(position)) != 0){
+                    new AlertDialog.Builder(mContext)
+                            .setTitle("Warning")
+                            .setMessage("Image has been labeled between A and B")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .show();
+                }
+
+
                 //未選擇 > 選擇
-                if(!mCheck.get(position)){
+                else if(!mCheck.get(position)){
 
                     if(checkCount == 2){
                         int temp = -1;
@@ -169,7 +197,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         selectedPosition2 = -1;
                 }
 
-
+            Log.d(TAG, "selectedPosition1 = " + selectedPosition1 + "selectedPosition2 = " + selectedPosition2);
 
 
                 notifyDataSetChanged();

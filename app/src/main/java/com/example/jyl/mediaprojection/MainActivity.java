@@ -47,10 +47,13 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> mStart = new ArrayList<>();
     private ArrayList<String> mEnd = new ArrayList<>();
     private ArrayList<String> mLabel = new ArrayList<>();
+    private ArrayList<String> mIndex = new ArrayList<>();
+
 
     private SharedPreferences sharedPreferences;
 
     int totalsize = 0;
+    public static int controlIndex = 0;
 
     public static ImageView imageShow;
     Button bored;
@@ -58,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> labelList;
     private ArrayList<String> startList;
     private ArrayList<String> endList;
+    private ArrayList<String> indexList;
+
 
 
 
@@ -72,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         bored = (Button)findViewById(R.id.btn_bored);
         not_bored = (Button)findViewById(R.id.btn_notbored);
 
-        bored.setOnClickListener(doClick);
-//        not_bored.setOnClickListener(doClick);
+        bored.setOnClickListener(doBoredClick);
+        not_bored.setOnClickListener(doNotBoredClick);
 
 
         requestCapturePermission();
@@ -81,11 +86,11 @@ public class MainActivity extends AppCompatActivity {
         getImages();
     }
 
-    Button.OnClickListener doClick = new Button.OnClickListener() {
+    Button.OnClickListener doBoredClick = new Button.OnClickListener() {
         @Override
         public void onClick(View v) {
 
-
+        Toast.makeText(MainActivity.this, "Bored Click", Toast.LENGTH_SHORT).show();
 //                    mLabel.set(selectedPosition1, "bored");
 //                    mLabel.set(selectedPosition2, "bored");
             String serializedObject = sharedPreferences.getString("Label", null);
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                     for(int i = selectedPosition2; i<=selectedPosition1; i++)
                         temp.set(i, "bored");
                 }
-                Log.d(TAG, "SerializeObject Result: " + temp);
+                Log.d(TAG, "Label SerializeObject Result: " + temp);
 
                 Gson gson = new Gson();
                 String json = gson.toJson(temp);
@@ -126,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 String json = gson.toJson(temp1);
                 sharedPreferences.edit().putString("Start", json).apply();
 
-                Log.d(TAG, "SerializeObject Result: " + temp1);
+                Log.d(TAG, "Start SerializeObject Result: " + temp1);
 
             }
 
@@ -145,7 +150,31 @@ public class MainActivity extends AppCompatActivity {
                 String json = gson.toJson(temp2);
                 sharedPreferences.edit().putString("End", json).apply();
 
-                Log.d(TAG, "SerializeObject Result: " + temp2);
+                Log.d(TAG, "End SerializeObject Result: " + temp2);
+
+            }
+
+            String serializedObject3 = sharedPreferences.getString("Index", null);
+            ArrayList<String> temp3 = new ArrayList<>();
+            if (serializedObject3 != null) {
+                Gson gson3 = new Gson();
+                Type type = new TypeToken<ArrayList<String>>() {}.getType();
+                temp3 = gson3.fromJson(serializedObject3, type);
+                controlIndex = controlIndex + 1;
+
+                if(selectedPosition1 < selectedPosition2){
+                    for(int i = selectedPosition1; i<=selectedPosition2; i++)
+                        temp3.set(i, String.valueOf(controlIndex));
+                }else{
+                    for(int i = selectedPosition2; i<=selectedPosition1; i++)
+                        temp3.set(i, String.valueOf(controlIndex));
+                }
+
+                Gson gson = new Gson();
+                String json = gson.toJson(temp3);
+                sharedPreferences.edit().putString("Index", json).apply();
+
+                Log.d(TAG, "Index SerializeObject Result: " + temp3);
 
             }
 //            if(selectedPosition1 < selectedPosition2){
@@ -156,7 +185,80 @@ public class MainActivity extends AppCompatActivity {
 //                        mEnd.set(selectedPosition1, 1);
 //                    }
 
+            selectedPosition1 = -1;
+            selectedPosition2 = -1;
+        }
+    };
 
+    Button.OnClickListener doNotBoredClick = new Button.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+            Toast.makeText(MainActivity.this, "Not Bored Click", Toast.LENGTH_SHORT).show();
+//                    mLabel.set(selectedPosition1, "bored");
+//                    mLabel.set(selectedPosition2, "bored");
+            String serializedObject = sharedPreferences.getString("Label", null);
+            ArrayList<String> temp = new ArrayList<>();
+            if (serializedObject != null){
+                Gson gson1 = new Gson();
+                Type type = new TypeToken<ArrayList<String>>(){}.getType();
+                temp = gson1.fromJson(serializedObject, type);
+                Log.d(TAG, "SerializeObject: " + temp);
+
+                if(selectedPosition1 < selectedPosition2){
+                    for(int i = selectedPosition1; i<=selectedPosition2; i++)
+                        temp.set(i, "not_bored");
+                }else{
+                    for(int i = selectedPosition2; i<=selectedPosition1; i++)
+                        temp.set(i, "not_bored");
+                }
+                Log.d(TAG, "Label SerializeObject Result: " + temp);
+
+                Gson gson = new Gson();
+                String json = gson.toJson(temp);
+                sharedPreferences.edit().putString("Label", json).apply();
+
+            }
+
+            String serializedObject1 = sharedPreferences.getString("Start", null);
+            ArrayList<String> temp1 = new ArrayList<>();
+            if (serializedObject1 != null) {
+                Gson gson1 = new Gson();
+                Type type = new TypeToken<ArrayList<String>>() {}.getType();
+                temp1 = gson1.fromJson(serializedObject1, type);
+                if(selectedPosition1 < selectedPosition2){
+                    temp1.set(selectedPosition1,"1");
+                }else
+                    temp1.set(selectedPosition2,"1");
+
+                Gson gson = new Gson();
+                String json = gson.toJson(temp1);
+                sharedPreferences.edit().putString("Start", json).apply();
+
+                Log.d(TAG, "Start SerializeObject Result: " + temp1);
+
+            }
+
+            String serializedObject2 = sharedPreferences.getString("End", null);
+            ArrayList<String> temp2 = new ArrayList<>();
+            if (serializedObject2 != null) {
+                Gson gson1 = new Gson();
+                Type type = new TypeToken<ArrayList<String>>() {}.getType();
+                temp2 = gson1.fromJson(serializedObject2, type);
+                if(selectedPosition1 < selectedPosition2){
+                    temp2.set(selectedPosition2,"1");
+                }else
+                    temp2.set(selectedPosition1,"1");
+
+                Gson gson = new Gson();
+                String json = gson.toJson(temp2);
+                sharedPreferences.edit().putString("End", json).apply();
+
+                Log.d(TAG, "End SerializeObject Result: " + temp2);
+
+            }
+            selectedPosition1 = -1;
+            selectedPosition2 = -1;
         }
     };
 
@@ -178,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
             mLabel.clear();
             mStart.clear();
             mEnd.clear();
+            mIndex.clear();
             if(imgFile.listFiles()!=null){
                 for (int i = 0; i < files.length; i++)
                 {
@@ -188,53 +291,68 @@ public class MainActivity extends AppCompatActivity {
 
 
                     //Get data and turn String to ArrayList
-                if(i<totalsize){
-                    String serializedObject = sharedPreferences.getString("Label", null);
-                    Log.d(TAG, "Get SerializeObject: " + serializedObject);
-                    labelList = new ArrayList<>();
-                    if (serializedObject != null){
-                        Gson gson1 = new Gson();
-                        Type type = new TypeToken<ArrayList<String>>(){}.getType();
-                        labelList = gson1.fromJson(serializedObject, type);
-                        Log.d(TAG, "SerializeObject: " + labelList);
-                        mLabel.add(labelList.get(i));
+                    if(i<totalsize){
+                        String serializedObject = sharedPreferences.getString("Label", null);
+                        Log.d(TAG, "Get SerializeObject: " + serializedObject);
+                        labelList = new ArrayList<>();
+                        if (serializedObject != null){
+                            Gson gson1 = new Gson();
+                            Type type = new TypeToken<ArrayList<String>>(){}.getType();
+                            labelList = gson1.fromJson(serializedObject, type);
+                            Log.d(TAG, "SerializeObject: " + labelList);
+                            mLabel.add(labelList.get(i));
+                        }
                     }
-                }
-                else
-                    mLabel.add("NA");
+                    else
+                        mLabel.add("NA");
 
-                if(i<totalsize){
-                    //Get data and turn String to ArrayList
-                    String serializedObject1 = sharedPreferences.getString("Start", null);
-                    Log.d(TAG, "Get SerializeObject: " + serializedObject1);
-                    startList = new ArrayList<>();
-                    if (serializedObject1 != null){
-                        Gson gson1 = new Gson();
-                        Type type = new TypeToken<ArrayList<String>>(){}.getType();
-                        startList = gson1.fromJson(serializedObject1, type);
-                        Log.d(TAG, "SerializeObject: " + startList);
-                        mStart.add(startList.get(i));
+                    if(i<totalsize){
+                        //Get data and turn String to ArrayList
+                        String serializedObject1 = sharedPreferences.getString("Start", null);
+                        Log.d(TAG, "Get SerializeObject: " + serializedObject1);
+                        startList = new ArrayList<>();
+                        if (serializedObject1 != null){
+                            Gson gson1 = new Gson();
+                            Type type = new TypeToken<ArrayList<String>>(){}.getType();
+                            startList = gson1.fromJson(serializedObject1, type);
+                            Log.d(TAG, "SerializeObject: " + startList);
+                            mStart.add(startList.get(i));
+                        }
                     }
-                }
-                else
-                    mStart.add("0");
+                    else
+                        mStart.add("0");
 
 
-                    //Get data and turn String to ArrayList
-                if(i<totalsize){
-                    String serializedObject2 = sharedPreferences.getString("End", null);
-                    Log.d(TAG, "Get SerializeObject: " + serializedObject2);
-                    endList = new ArrayList<>();
-                    if (serializedObject2 != null){
-                        Gson gson1 = new Gson();
-                        Type type = new TypeToken<ArrayList<String>>(){}.getType();
-                        endList = gson1.fromJson(serializedObject2, type);
-                        Log.d(TAG, "SerializeObject: " + endList);
-                        mEnd.add(endList.get(i));
+                        //Get data and turn String to ArrayList
+                    if(i<totalsize){
+                        String serializedObject2 = sharedPreferences.getString("End", null);
+                        Log.d(TAG, "Get SerializeObject: " + serializedObject2);
+                        endList = new ArrayList<>();
+                        if (serializedObject2 != null){
+                            Gson gson1 = new Gson();
+                            Type type = new TypeToken<ArrayList<String>>(){}.getType();
+                            endList = gson1.fromJson(serializedObject2, type);
+                            Log.d(TAG, "SerializeObject: " + endList);
+                            mEnd.add(endList.get(i));
+                        }
                     }
-                }
-                else
-                    mEnd.add("0");
+                    else
+                        mEnd.add("0");
+
+                    if(i<totalsize){
+                        String serializedObject2 = sharedPreferences.getString("Index", null);
+                        Log.d(TAG, "Get SerializeObject: " + serializedObject2);
+                        indexList = new ArrayList<>();
+                        if (serializedObject2 != null){
+                            Gson gson1 = new Gson();
+                            Type type = new TypeToken<ArrayList<String>>(){}.getType();
+                            indexList = gson1.fromJson(serializedObject2, type);
+                            Log.d(TAG, "SerializeObject: " + indexList);
+                            mIndex.add(indexList.get(i));
+                        }
+                    }
+                    else
+                        mIndex.add("0");
                 }
 
                 Glide.with(this)
@@ -265,6 +383,11 @@ public class MainActivity extends AppCompatActivity {
         String json2 = gson2.toJson(mEnd);
         sharedPreferences.edit(). putString("End", json2).apply();
 
+        //Save data to preference
+        Gson gson3 = new Gson();
+        String json3 = gson3.toJson(mIndex);
+        sharedPreferences.edit(). putString("Index", json3).apply();
+
 
 
         initRecyclerView();
@@ -275,7 +398,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(layoutManager);
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mImages, mCheck, mLabel, mStart, mEnd);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(this, mImages, mCheck, mLabel, mStart, mEnd, mIndex);
         recyclerView.setAdapter(adapter);
     }
 

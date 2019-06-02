@@ -25,7 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
             android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingTop="3dp">
 
 
             <ImageView
@@ -33,14 +34,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.1"
-                app:srcCompat="@drawable/start_circle" />
+                app:srcCompat="@drawable/bored_start_circle" />
 
             <View
                 android:id="@+id/v_label"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
-                android:layout_weight="0.8"
 
+                android:layout_weight="0.8"
                 android:background="#a40404" />
 
             <ImageView
@@ -49,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="0.1"
-                app:srcCompat="@drawable/start_circle" />
+                app:srcCompat="@drawable/bored_start_circle" />
         </LinearLayout>
 
         <!--<TextView-->
