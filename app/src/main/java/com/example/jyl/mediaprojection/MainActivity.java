@@ -1,7 +1,9 @@
 package com.example.jyl.mediaprojection;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -77,8 +79,10 @@ public class MainActivity extends AppCompatActivity {
         bored = (Button)findViewById(R.id.btn_bored);
         not_bored = (Button)findViewById(R.id.btn_notbored);
 
-        bored.setOnClickListener(doBoredClick);
-        not_bored.setOnClickListener(doNotBoredClick);
+            bored.setOnClickListener(doBoredClick);
+            not_bored.setOnClickListener(doNotBoredClick);
+
+
 
 
         requestCapturePermission();
@@ -93,19 +97,23 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(MainActivity.this, "Bored Click", Toast.LENGTH_SHORT).show();
 //                    mLabel.set(selectedPosition1, "bored");
 //                    mLabel.set(selectedPosition2, "bored");
+        if(selectedPosition1 != -1 && selectedPosition2 != -1) {
+
+
             String serializedObject = sharedPreferences.getString("Label", null);
             ArrayList<String> temp = new ArrayList<>();
-            if (serializedObject != null){
+            if (serializedObject != null) {
                 Gson gson1 = new Gson();
-                Type type = new TypeToken<ArrayList<String>>(){}.getType();
+                Type type = new TypeToken<ArrayList<String>>() {
+                }.getType();
                 temp = gson1.fromJson(serializedObject, type);
                 Log.d(TAG, "SerializeObject: " + temp);
 
-                if(selectedPosition1 < selectedPosition2){
-                    for(int i = selectedPosition1; i<=selectedPosition2; i++)
+                if (selectedPosition1 < selectedPosition2) {
+                    for (int i = selectedPosition1; i <= selectedPosition2; i++)
                         temp.set(i, "bored");
-                }else{
-                    for(int i = selectedPosition2; i<=selectedPosition1; i++)
+                } else {
+                    for (int i = selectedPosition2; i <= selectedPosition1; i++)
                         temp.set(i, "bored");
                 }
                 Log.d(TAG, "Label SerializeObject Result: " + temp);
@@ -120,12 +128,13 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<String> temp1 = new ArrayList<>();
             if (serializedObject1 != null) {
                 Gson gson1 = new Gson();
-                Type type = new TypeToken<ArrayList<String>>() {}.getType();
+                Type type = new TypeToken<ArrayList<String>>() {
+                }.getType();
                 temp1 = gson1.fromJson(serializedObject1, type);
-                if(selectedPosition1 < selectedPosition2){
-                    temp1.set(selectedPosition1,"1");
-                }else
-                    temp1.set(selectedPosition2,"1");
+                if (selectedPosition1 < selectedPosition2) {
+                    temp1.set(selectedPosition1, "1");
+                } else
+                    temp1.set(selectedPosition2, "1");
 
                 Gson gson = new Gson();
                 String json = gson.toJson(temp1);
@@ -139,12 +148,13 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<String> temp2 = new ArrayList<>();
             if (serializedObject2 != null) {
                 Gson gson1 = new Gson();
-                Type type = new TypeToken<ArrayList<String>>() {}.getType();
+                Type type = new TypeToken<ArrayList<String>>() {
+                }.getType();
                 temp2 = gson1.fromJson(serializedObject2, type);
-                if(selectedPosition1 < selectedPosition2){
-                    temp2.set(selectedPosition2,"1");
-                }else
-                    temp2.set(selectedPosition1,"1");
+                if (selectedPosition1 < selectedPosition2) {
+                    temp2.set(selectedPosition2, "1");
+                } else
+                    temp2.set(selectedPosition1, "1");
 
                 Gson gson = new Gson();
                 String json = gson.toJson(temp2);
@@ -158,15 +168,16 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<String> temp3 = new ArrayList<>();
             if (serializedObject3 != null) {
                 Gson gson3 = new Gson();
-                Type type = new TypeToken<ArrayList<String>>() {}.getType();
+                Type type = new TypeToken<ArrayList<String>>() {
+                }.getType();
                 temp3 = gson3.fromJson(serializedObject3, type);
                 controlIndex = controlIndex + 1;
 
-                if(selectedPosition1 < selectedPosition2){
-                    for(int i = selectedPosition1; i<=selectedPosition2; i++)
+                if (selectedPosition1 < selectedPosition2) {
+                    for (int i = selectedPosition1; i <= selectedPosition2; i++)
                         temp3.set(i, String.valueOf(controlIndex));
-                }else{
-                    for(int i = selectedPosition2; i<=selectedPosition1; i++)
+                } else {
+                    for (int i = selectedPosition2; i <= selectedPosition1; i++)
                         temp3.set(i, String.valueOf(controlIndex));
                 }
 
@@ -187,6 +198,19 @@ public class MainActivity extends AppCompatActivity {
 
             selectedPosition1 = -1;
             selectedPosition2 = -1;
+
+            getImages();
+        }else{
+            new AlertDialog.Builder(MainActivity.this)
+                    .setMessage("Please choose an interval")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .show();
+        }
         }
     };
 
@@ -259,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
             }
             selectedPosition1 = -1;
             selectedPosition2 = -1;
+            getImages();
         }
     };
 

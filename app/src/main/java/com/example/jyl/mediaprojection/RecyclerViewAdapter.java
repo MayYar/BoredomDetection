@@ -150,7 +150,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 if(Integer.parseInt(mIndex.get(position)) != 0){
                     new AlertDialog.Builder(mContext)
                             .setTitle("Warning")
-                            .setMessage("Image has been labeled between A and B")
+                            .setMessage("Image has been labeled between. Are you sure to reset?")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
