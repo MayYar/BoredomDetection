@@ -3,6 +3,8 @@ package com.example.jyl.mediaprojection;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.media.Image;
 import android.support.annotation.NonNull;
@@ -16,11 +18,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
 import static com.example.jyl.mediaprojection.MainActivity.imageShow;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>{
@@ -34,6 +40,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     private ArrayList<String> mEnd = new ArrayList<>();
     private ArrayList<String> mLabel = new ArrayList<>();
     private ArrayList<String> mIndex = new ArrayList<>();
+
+    private SharedPreferences sharedPreferences;
 
 
     private Context mContext;
@@ -50,6 +58,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         this.mStart = mStart;
         this.mEnd = mEnd;
         this.mIndex = mIndex;
+        sharedPreferences = mContext.getSharedPreferences("com.example.jyl.mediaprojection", MODE_PRIVATE);
 
     }
 
@@ -150,14 +159,104 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 if(Integer.parseInt(mIndex.get(position)) != 0){
                     new AlertDialog.Builder(mContext)
                             .setTitle("Warning")
-                            .setMessage("Image has been labeled between. Are you sure to reset?")
+                            .setMessage("Labeled between " + mIndex.indexOf(mIndex.get(position)) + " and " + mIndex.lastIndexOf(mIndex.get(position)) + " \nAre you sure to reset?")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    String serializedObject = sharedPreferences.getString("Label", null);
+                                    ArrayList<String> temp = new ArrayList<>();
+                                    if (serializedObject != null) {
+                                        Gson gson1 = new Gson();
+                                        Type type = new TypeToken<ArrayList<String>>() {
+                                        }.getType();
+                                        temp = gson1.fromJson(serializedObject, type);
+                                        Log.d(TAG, "SerializeObject: " + temp);
+
+                                        for (int a = mIndex.indexOf(mIndex.get(position)); a <= mIndex.lastIndexOf(mIndex.get(position)); a++)
+                                            temp.set(a, "NA");
+
+                                        Log.d(TAG, "Label SerializeObject Result: " + temp);
+
+                                        Gson gson = new Gson();
+                                        String json = gson.toJson(temp);
+                                        sharedPreferences.edit().putString("Label", json).apply();
+
+                                    }
+                                    //-------------------------------------------------------
+                                    String serializedObject1 = sharedPreferences.getString("Start", null);
+                                    ArrayList<String> temp1 = new ArrayList<>();
+                                    if (serializedObject1 != null) {
+                                        Gson gson1 = new Gson();
+                                        Type type = new TypeToken<ArrayList<String>>() {
+                                        }.getType();
+                                        temp1 = gson1.fromJson(serializedObject1, type);
+
+                                        temp1.set(mIndex.indexOf(mIndex.get(position)), "0");
+
+                                        temp1.set(mIndex.lastIndexOf(mIndex.get(position)), "0");
+
+                                        Gson gson = new Gson();
+                                        String json = gson.toJson(temp1);
+                                        sharedPreferences.edit().putString("Start", json).apply();
+
+                                        Log.d(TAG, "Start SerializeObject Result: " + temp1);
+
+                                    }
+                                    //-------------------------------------------------------
+                                    String serializedObject2 = sharedPreferences.getString("End", null);
+                                    ArrayList<String> temp2 = new ArrayList<>();
+                                    if (serializedObject2 != null) {
+                                        Gson gson1 = new Gson();
+                                        Type type = new TypeToken<ArrayList<String>>() {
+                                        }.getType();
+                                        temp2 = gson1.fromJson(serializedObject2, type);
+
+                                        temp2.set(mIndex.indexOf(mIndex.get(position)), "0");
+
+                                        temp2.set(mIndex.lastIndexOf(mIndex.get(position)), "0");
+
+                                        Gson gson = new Gson();
+                                        String json = gson.toJson(temp2);
+                                        sharedPreferences.edit().putString("End", json).apply();
+
+                                        Log.d(TAG, "End SerializeObject Result: " + temp2);
+
+                                    }
+                                    //-------------------------------------------------------
+
+
+                                    String serializedObject3 = sharedPreferences.getString("Index", null);
+                                    ArrayList<String> rs = new ArrayList<>();
+                                    if (serializedObject3 != null) {
+                                        Gson gson3 = new Gson();
+                                        Type type = new TypeToken<ArrayList<String>>() {
+                                        }.getType();
+                                        rs = gson3.fromJson(serializedObject3, type);
+
+                                        for (int a = mIndex.indexOf(mIndex.get(position)); a <= mIndex.lastIndexOf(mIndex.get(position)); a++)
+                                            rs.set(a, String.valueOf(0));
+
+                                        Gson gson = new Gson();
+                                        String json = gson.toJson(rs);
+                                        sharedPreferences.edit().putString("Index", json).apply();
+
+                                        Log.d(TAG, "(Change)Index SerializeObject Result: " + rs);
+
+
+//                                        mContext.startActivity(new Intent(mContext,MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+
+
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
                                 }
                             })
                             .show();
+
                 }
 
 
@@ -198,6 +297,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
 
             Log.d(TAG, "selectedPosition1 = " + selectedPosition1 + "selectedPosition2 = " + selectedPosition2);
+
 
 
                 notifyDataSetChanged();

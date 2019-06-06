@@ -99,95 +99,98 @@ public class MainActivity extends AppCompatActivity {
 //                    mLabel.set(selectedPosition2, "bored");
         if(selectedPosition1 != -1 && selectedPosition2 != -1) {
 
-
-            String serializedObject = sharedPreferences.getString("Label", null);
-            ArrayList<String> temp = new ArrayList<>();
-            if (serializedObject != null) {
-                Gson gson1 = new Gson();
-                Type type = new TypeToken<ArrayList<String>>() {
-                }.getType();
-                temp = gson1.fromJson(serializedObject, type);
-                Log.d(TAG, "SerializeObject: " + temp);
-
-                if (selectedPosition1 < selectedPosition2) {
-                    for (int i = selectedPosition1; i <= selectedPosition2; i++)
-                        temp.set(i, "bored");
-                } else {
-                    for (int i = selectedPosition2; i <= selectedPosition1; i++)
-                        temp.set(i, "bored");
-                }
-                Log.d(TAG, "Label SerializeObject Result: " + temp);
-
-                Gson gson = new Gson();
-                String json = gson.toJson(temp);
-                sharedPreferences.edit().putString("Label", json).apply();
-
-            }
-
-            String serializedObject1 = sharedPreferences.getString("Start", null);
-            ArrayList<String> temp1 = new ArrayList<>();
-            if (serializedObject1 != null) {
-                Gson gson1 = new Gson();
-                Type type = new TypeToken<ArrayList<String>>() {
-                }.getType();
-                temp1 = gson1.fromJson(serializedObject1, type);
-                if (selectedPosition1 < selectedPosition2) {
-                    temp1.set(selectedPosition1, "1");
-                } else
-                    temp1.set(selectedPosition2, "1");
-
-                Gson gson = new Gson();
-                String json = gson.toJson(temp1);
-                sharedPreferences.edit().putString("Start", json).apply();
-
-                Log.d(TAG, "Start SerializeObject Result: " + temp1);
-
-            }
-
-            String serializedObject2 = sharedPreferences.getString("End", null);
-            ArrayList<String> temp2 = new ArrayList<>();
-            if (serializedObject2 != null) {
-                Gson gson1 = new Gson();
-                Type type = new TypeToken<ArrayList<String>>() {
-                }.getType();
-                temp2 = gson1.fromJson(serializedObject2, type);
-                if (selectedPosition1 < selectedPosition2) {
-                    temp2.set(selectedPosition2, "1");
-                } else
-                    temp2.set(selectedPosition1, "1");
-
-                Gson gson = new Gson();
-                String json = gson.toJson(temp2);
-                sharedPreferences.edit().putString("End", json).apply();
-
-                Log.d(TAG, "End SerializeObject Result: " + temp2);
-
-            }
-
-            String serializedObject3 = sharedPreferences.getString("Index", null);
-            ArrayList<String> temp3 = new ArrayList<>();
-            if (serializedObject3 != null) {
-                Gson gson3 = new Gson();
-                Type type = new TypeToken<ArrayList<String>>() {
-                }.getType();
-                temp3 = gson3.fromJson(serializedObject3, type);
-                controlIndex = controlIndex + 1;
-
-                if (selectedPosition1 < selectedPosition2) {
-                    for (int i = selectedPosition1; i <= selectedPosition2; i++)
-                        temp3.set(i, String.valueOf(controlIndex));
-                } else {
-                    for (int i = selectedPosition2; i <= selectedPosition1; i++)
-                        temp3.set(i, String.valueOf(controlIndex));
-                }
-
-                Gson gson = new Gson();
-                String json = gson.toJson(temp3);
-                sharedPreferences.edit().putString("Index", json).apply();
-
-                Log.d(TAG, "Index SerializeObject Result: " + temp3);
-
-            }
+            LabelRetrieval();
+            StartRetrieval();
+            EndRetrieval();
+            IndexRetrieval();
+//            String serializedObject = sharedPreferences.getString("Label", null);
+//            ArrayList<String> temp = new ArrayList<>();
+//            if (serializedObject != null) {
+//                Gson gson1 = new Gson();
+//                Type type = new TypeToken<ArrayList<String>>() {
+//                }.getType();
+//                temp = gson1.fromJson(serializedObject, type);
+//                Log.d(TAG, "SerializeObject: " + temp);
+//
+//                if (selectedPosition1 < selectedPosition2) {
+//                    for (int i = selectedPosition1; i <= selectedPosition2; i++)
+//                        temp.set(i, "bored");
+//                } else {
+//                    for (int i = selectedPosition2; i <= selectedPosition1; i++)
+//                        temp.set(i, "bored");
+//                }
+//                Log.d(TAG, "Label SerializeObject Result: " + temp);
+//
+//                Gson gson = new Gson();
+//                String json = gson.toJson(temp);
+//                sharedPreferences.edit().putString("Label", json).apply();
+//
+//            }
+//
+//            String serializedObject1 = sharedPreferences.getString("Start", null);
+//            ArrayList<String> temp1 = new ArrayList<>();
+//            if (serializedObject1 != null) {
+//                Gson gson1 = new Gson();
+//                Type type = new TypeToken<ArrayList<String>>() {
+//                }.getType();
+//                temp1 = gson1.fromJson(serializedObject1, type);
+//                if (selectedPosition1 < selectedPosition2) {
+//                    temp1.set(selectedPosition1, "1");
+//                } else
+//                    temp1.set(selectedPosition2, "1");
+//
+//                Gson gson = new Gson();
+//                String json = gson.toJson(temp1);
+//                sharedPreferences.edit().putString("Start", json).apply();
+//
+//                Log.d(TAG, "Start SerializeObject Result: " + temp1);
+//
+//            }
+//
+//            String serializedObject2 = sharedPreferences.getString("End", null);
+//            ArrayList<String> temp2 = new ArrayList<>();
+//            if (serializedObject2 != null) {
+//                Gson gson1 = new Gson();
+//                Type type = new TypeToken<ArrayList<String>>() {
+//                }.getType();
+//                temp2 = gson1.fromJson(serializedObject2, type);
+//                if (selectedPosition1 < selectedPosition2) {
+//                    temp2.set(selectedPosition2, "1");
+//                } else
+//                    temp2.set(selectedPosition1, "1");
+//
+//                Gson gson = new Gson();
+//                String json = gson.toJson(temp2);
+//                sharedPreferences.edit().putString("End", json).apply();
+//
+//                Log.d(TAG, "End SerializeObject Result: " + temp2);
+//
+//            }
+//
+//            String serializedObject3 = sharedPreferences.getString("Index", null);
+//            ArrayList<String> temp3 = new ArrayList<>();
+//            if (serializedObject3 != null) {
+//                Gson gson3 = new Gson();
+//                Type type = new TypeToken<ArrayList<String>>() {
+//                }.getType();
+//                temp3 = gson3.fromJson(serializedObject3, type);
+//                controlIndex = controlIndex + 1;
+//
+//                if (selectedPosition1 < selectedPosition2) {
+//                    for (int i = selectedPosition1; i <= selectedPosition2; i++)
+//                        temp3.set(i, String.valueOf(controlIndex));
+//                } else {
+//                    for (int i = selectedPosition2; i <= selectedPosition1; i++)
+//                        temp3.set(i, String.valueOf(controlIndex));
+//                }
+//
+//                Gson gson = new Gson();
+//                String json = gson.toJson(temp3);
+//                sharedPreferences.edit().putString("Index", json).apply();
+//
+//                Log.d(TAG, "Index SerializeObject Result: " + temp3);
+//
+//            }
 //            if(selectedPosition1 < selectedPosition2){
 //                        mStart.set(selectedPosition1, 1);
 //                        mEnd.set(selectedPosition2, 1);
@@ -287,7 +290,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    private void getImages(){
+    public void getImages(){
         Log.d(TAG, "initImageBitmaps: preparing bitmaps.");
 
 
@@ -416,6 +419,101 @@ public class MainActivity extends AppCompatActivity {
 
 
         initRecyclerView();
+    }
+
+    public void LabelRetrieval() {
+        String serializedObject = sharedPreferences.getString("Label", null);
+        ArrayList<String> temp = new ArrayList<>();
+        if (serializedObject != null) {
+            Gson gson1 = new Gson();
+            Type type = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            temp = gson1.fromJson(serializedObject, type);
+            Log.d(TAG, "SerializeObject: " + temp);
+
+            if (selectedPosition1 < selectedPosition2) {
+                for (int i = selectedPosition1; i <= selectedPosition2; i++)
+                    temp.set(i, "bored");
+            } else {
+                for (int i = selectedPosition2; i <= selectedPosition1; i++)
+                    temp.set(i, "bored");
+            }
+            Log.d(TAG, "Label SerializeObject Result: " + temp);
+
+            Gson gson = new Gson();
+            String json = gson.toJson(temp);
+            sharedPreferences.edit().putString("Label", json).apply();
+
+        }
+    }
+    public void StartRetrieval() {
+
+        String serializedObject1 = sharedPreferences.getString("Start", null);
+        ArrayList<String> temp1 = new ArrayList<>();
+        if (serializedObject1 != null) {
+            Gson gson1 = new Gson();
+            Type type = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            temp1 = gson1.fromJson(serializedObject1, type);
+            if (selectedPosition1 < selectedPosition2) {
+                temp1.set(selectedPosition1, "1");
+            } else
+                temp1.set(selectedPosition2, "1");
+
+            Gson gson = new Gson();
+            String json = gson.toJson(temp1);
+            sharedPreferences.edit().putString("Start", json).apply();
+
+            Log.d(TAG, "Start SerializeObject Result: " + temp1);
+
+        }
+    }
+    public void EndRetrieval() {
+        String serializedObject2 = sharedPreferences.getString("End", null);
+        ArrayList<String> temp2 = new ArrayList<>();
+        if (serializedObject2 != null) {
+            Gson gson1 = new Gson();
+            Type type = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            temp2 = gson1.fromJson(serializedObject2, type);
+            if (selectedPosition1 < selectedPosition2) {
+                temp2.set(selectedPosition2, "1");
+            } else
+                temp2.set(selectedPosition1, "1");
+
+            Gson gson = new Gson();
+            String json = gson.toJson(temp2);
+            sharedPreferences.edit().putString("End", json).apply();
+
+            Log.d(TAG, "End SerializeObject Result: " + temp2);
+
+        }
+    }
+    public void IndexRetrieval(){
+        String serializedObject3 = sharedPreferences.getString("Index", null);
+        ArrayList<String> temp3 = new ArrayList<>();
+        if (serializedObject3 != null) {
+            Gson gson3 = new Gson();
+            Type type = new TypeToken<ArrayList<String>>() {
+            }.getType();
+            temp3 = gson3.fromJson(serializedObject3, type);
+            controlIndex = controlIndex + 1;
+
+            if (selectedPosition1 < selectedPosition2) {
+                for (int i = selectedPosition1; i <= selectedPosition2; i++)
+                    temp3.set(i, String.valueOf(controlIndex));
+            } else {
+                for (int i = selectedPosition2; i <= selectedPosition1; i++)
+                    temp3.set(i, String.valueOf(controlIndex));
+            }
+
+            Gson gson = new Gson();
+            String json = gson.toJson(temp3);
+            sharedPreferences.edit().putString("Index", json).apply();
+
+            Log.d(TAG, "Index SerializeObject Result: " + temp3);
+
+        }
     }
 
     private void initRecyclerView(){
