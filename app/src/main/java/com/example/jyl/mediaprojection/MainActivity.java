@@ -1,6 +1,7 @@
 package com.example.jyl.mediaprojection;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -570,6 +571,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isMyServiceRunning() {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (ScreenShotService.class.getName().equals(service.service.getClassName())) {
+                Log.i (TAG, "isMyServiceRunning?"+ true+"");
+                return true;
+            }
+        }
+        Log.i (TAG, "isMyServiceRunning?"+ false+"");
+        return false;
+    }
+
     public  boolean isStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= 23) {
             if (checkSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -610,5 +623,18 @@ public class MainActivity extends AppCompatActivity {
             getImages();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isMyServiceRunning();
+    }
+
+    @Override
+    protected void onDestroy() {
+//        stopService(new Intent(getApplicationContext(), ScreenShotService.class));
+        Log.d(TAG, "On Destroy!");
+        super.onDestroy();
     }
 }

@@ -62,6 +62,8 @@ public class ScreenShotService extends Service {
         return null;
     }
 
+
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -292,6 +294,15 @@ public class ScreenShotService extends Service {
 //        return new File(tmp);
 
     }
+
+    @Override
+    public void onTaskRemoved(Intent rootIntent) {
+        Intent restartServiceIntent = new Intent(getApplicationContext(), this.getClass());
+        restartServiceIntent.setPackage(getPackageName());
+        startService(restartServiceIntent);
+        super.onTaskRemoved(rootIntent);
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
